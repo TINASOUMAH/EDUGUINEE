@@ -14,7 +14,7 @@ class EduGuineeApp extends StatelessWidget {
     return MaterialApp(
       title: 'EduGuinée',
       debugShowCheckedModeBanner: false,
-      theme: AppTheme.lightTheme(context),
+      theme: AppTheme.lightTheme(),
       home: const SplashScreen(),
     );
   }

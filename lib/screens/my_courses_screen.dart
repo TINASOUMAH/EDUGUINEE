@@ -8,77 +8,171 @@ import 'chapters_screen.dart';
 
 class MyCoursesScreen extends StatelessWidget {
   final String className;
+  final String? option;
   
   const MyCoursesScreen({
     super.key, 
-    required this.className
+    required this.className,
+    this.option,
   });
 
   @override
   Widget build(BuildContext context) {
-    // Liste simulée des matières desormais dans CourseData
-
+    final subjects = CourseData.getSubjectsForClass(className, option: option);
 
     return Scaffold(
+      backgroundColor: AppTheme.primaryColor.withOpacity(0.95),
       appBar: AppBar(
-        title: Text('Mes Cours', style: GoogleFonts.poppins(color: AppTheme.textMain, fontWeight: FontWeight.bold)),
+        title: Text(
+          'Cours de $className${option != null ? ' ($option)' : ''}', 
+          style: GoogleFonts.poppins(color: Colors.white, fontWeight: FontWeight.bold)
+        ),
+        backgroundColor: AppTheme.primaryColor,
+        elevation: 0,
         centerTitle: true,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios_new_rounded, color: AppTheme.primaryColor),
+          icon: const Icon(Icons.arrow_back_ios_new_rounded, color: AppTheme.secondaryColor),
           onPressed: () => Navigator.pop(context),
         ),
       ),
-      body: ListView.separated(
-        padding: const EdgeInsets.all(20),
-        itemCount: CourseData.subjects.length,
-        separatorBuilder: (context, index) => const SizedBox(height: 16),
-        itemBuilder: (context, index) {
-          final subject = CourseData.subjects[index];
-          return Container(
+      body: Column(
+        children: [
+          // Header Decoration
+          Container(
+            height: 2,
+            width: double.infinity,
             decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(20),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withOpacity(0.05),
-                  blurRadius: 10,
-                  offset: const Offset(0, 4),
-                ),
-              ],
+              gradient: LinearGradient(
+                colors: [
+                  AppTheme.secondaryColor.withOpacity(0),
+                  AppTheme.secondaryColor,
+                  AppTheme.secondaryColor.withOpacity(0),
+                ],
+              ),
             ),
-            child: ListTile(
-              contentPadding: const EdgeInsets.all(16),
-              leading: Container(
-                padding: const EdgeInsets.all(12),
-                decoration: BoxDecoration(
-                  color: (subject.color as Color).withOpacity(0.1),
-                  shape: BoxShape.circle,
-                ),
-                child: Icon(subject.icon as IconData, color: subject.color as Color, size: 28),
-              ),
-              title: Text(
-                subject.name,
-                style: GoogleFonts.poppins(
-                  fontSize: 18,
-                  fontWeight: FontWeight.w600,
-                  color: AppTheme.textMain,
-                ),
-              ),
-              subtitle: Text(
-                '${subject.chapters.length} Chapitres',
-                style: GoogleFonts.inter(color: Colors.grey),
-              ),
-              trailing: const Icon(Icons.arrow_forward_ios_rounded, color: Colors.grey, size: 20),
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => ChaptersScreen(subject: subject)),
-                );
+          ),
+          
+          Expanded(
+            child: ListView.builder(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
+              itemCount: subjects.length,
+              itemBuilder: (context, index) {
+                return _buildGuiSchoolCard(context, subjects[index], index);
               },
             ),
-          ).animate().fadeIn(delay: (index * 100).ms).slideX(begin: 0.2);
-        },
+          ),
+        ],
       ),
     );
+  }
+
+  Widget _buildGuiSchoolCard(BuildContext context, CourseSubject subject, int index) {
+    return Container(
+      margin: const EdgeInsets.only(bottom: 20),
+      height: 120,
+      decoration: BoxDecoration(
+        color: const Color(0xFF1E293B), // Dark background for the card
+        borderRadius: BorderRadius.circular(12),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.3),
+            blurRadius: 10,
+            offset: const Offset(0, 5),
+          ),
+        ],
+      ),
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => ChaptersScreen(subject: subject)),
+            );
+          },
+          borderRadius: BorderRadius.circular(12),
+          child: Row(
+            children: [
+              // Left Section - Yellow with Icon/Illustration
+              Container(
+                width: 110,
+                decoration: const BoxDecoration(
+                  color: AppTheme.secondaryColor,
+                  borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(12),
+                    bottomLeft: Radius.circular(12),
+                  ),
+                ),
+                child: Center(
+                  child: Container(
+                    padding: const EdgeInsets.all(12),
+                    decoration: BoxDecoration(
+                      color: Colors.white.withOpacity(0.2),
+                      shape: BoxShape.circle,
+                    ),
+                    child: Icon(
+                      subject.icon as IconData,
+                      color: AppTheme.primaryColor,
+                      size: 40,
+                    ),
+                  ),
+                ),
+              ),
+              
+              // Middle Section - Text Content
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        subject.name,
+                        style: GoogleFonts.poppins(
+                          color: Colors.white,
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        subject.description ?? '${subject.chapters.length} Chapitres disponibles',
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                        style: GoogleFonts.inter(
+                          color: Colors.white.withOpacity(0.7),
+                          fontSize: 12,
+                          height: 1.3,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              
+              // Right Section - Arrow Tab
+              Container(
+                width: 30,
+                decoration: const BoxDecoration(
+                  color: AppTheme.secondaryColor,
+                  borderRadius: BorderRadius.only(
+                    topRight: Radius.circular(12),
+                    bottomRight: Radius.circular(12),
+                  ),
+                ),
+                child: const Center(
+                  child: Icon(
+                    Icons.chevron_right_rounded,
+                    color: AppTheme.primaryColor,
+                    size: 24,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    ).animate().fadeIn(delay: (index * 100).ms).slideX(begin: 0.1, end: 0);
   }
 }

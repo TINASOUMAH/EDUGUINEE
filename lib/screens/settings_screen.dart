@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../core/theme/app_theme.dart';
+import 'personal_info_screen.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
@@ -27,16 +28,18 @@ class _SettingsScreenState extends State<SettingsScreen> {
         ),
       ),
       body: ListView(
-        padding: const EdgeInsets.all(20),
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
         children: [
+          const SizedBox(height: 10),
           _buildSectionHeader("Général"),
           _buildSwitchTile(
             title: "Notifications",
             subtitle: "Recevoir des rappels de révision",
             value: _notificationsEnabled,
             onChanged: (val) => setState(() => _notificationsEnabled = val),
-            icon: Icons.notifications_active_rounded,
-            color: Colors.blue,
+            icon: Icons.notifications_rounded,
+            color: const Color(0xFF3B82F6), // Blue
+            bgColor: const Color(0xFFEFF6FF),
           ),
           _buildSwitchTile(
             title: "Sons",
@@ -44,7 +47,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
             value: _soundEnabled,
             onChanged: (val) => setState(() => _soundEnabled = val),
             icon: Icons.volume_up_rounded,
-            color: Colors.purple,
+            color: const Color(0xFFA855F7), // Purple
+            bgColor: const Color(0xFFF5F3FF),
           ),
           _buildSwitchTile(
             title: "Mode Sombre",
@@ -52,52 +56,35 @@ class _SettingsScreenState extends State<SettingsScreen> {
             value: _darkMode,
             onChanged: (val) {
                setState(() => _darkMode = val);
-               ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Le mode sombre sera disponible bientôt !")));
             },
             icon: Icons.dark_mode_rounded,
-            color: Colors.indigo,
+            color: const Color(0xFF4338CA), // Indigo
+            bgColor: const Color(0xFFEEF2FF),
           ),
 
-          const SizedBox(height: 24),
+          const SizedBox(height: 32),
           _buildSectionHeader("Compte"),
-           _buildActionTile(
+          _buildActionTile(
             title: "Modifier le profil",
             icon: Icons.person_rounded,
-            color: Colors.teal,
+            color: const Color(0xFF0D9488), // Teal
+            bgColor: const Color(0xFFF0FDFA),
             onTap: () {
-               // Navigation to Profile (already handled in Home, but good here too)
-               ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Accédez aux paramètres via l'icône de profil")));
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const PersonalInfoScreen()),
+              );
             },
           ),
           _buildActionTile(
             title: "Langue",
             icon: Icons.language_rounded,
-            color: Colors.orange,
-            onTap: () {},
-          ),
-
-           const SizedBox(height: 24),
-          _buildSectionHeader("Support"),
-          _buildActionTile(
-            title: "Politique de confidentialité",
-            icon: Icons.privacy_tip_rounded,
-            color: Colors.grey,
-            onTap: () {},
-          ),
-          _buildActionTile(
-            title: "Conditions d'utilisation",
-            icon: Icons.description_rounded,
-            color: Colors.grey,
+            color: const Color(0xFFD97706), // Orange
+            bgColor: const Color(0xFFFFFBEB),
             onTap: () {},
           ),
           
           const SizedBox(height: 40),
-          Center(
-            child: Text(
-              "Version 1.0.0",
-              style: GoogleFonts.inter(color: Colors.grey[400]),
-            ),
-          ),
         ],
       ),
     );
@@ -105,13 +92,13 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
   Widget _buildSectionHeader(String title) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: 12, left: 4),
+      padding: const EdgeInsets.only(bottom: 16, left: 8),
       child: Text(
         title.toUpperCase(),
         style: GoogleFonts.inter(
-          fontSize: 12,
-          fontWeight: FontWeight.bold,
-          color: Colors.grey[600],
+          fontSize: 13,
+          fontWeight: FontWeight.w600,
+          color: Colors.grey[500],
           letterSpacing: 1.2,
         ),
       ),
@@ -125,35 +112,58 @@ class _SettingsScreenState extends State<SettingsScreen> {
     required ValueChanged<bool> onChanged,
     required IconData icon,
     required Color color,
+    required Color bgColor,
   }) {
     return Container(
-      margin: const EdgeInsets.only(bottom: 12),
+      margin: const EdgeInsets.only(bottom: 16),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(20),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.04),
-            blurRadius: 10,
-            offset: const Offset(0, 2),
+            color: Colors.black.withOpacity(0.03),
+            blurRadius: 15,
+            offset: const Offset(0, 4),
           ),
         ],
       ),
-      child: SwitchListTile(
-        value: value,
-        onChanged: onChanged,
-        activeColor: AppTheme.primaryColor,
-        contentPadding: const EdgeInsets.all(12),
-        secondary: Container(
-          padding: const EdgeInsets.all(10),
-          decoration: BoxDecoration(
-            color: color.withOpacity(0.1),
-            shape: BoxShape.circle,
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: ListTile(
+          leading: Container(
+            width: 48,
+            height: 48,
+            decoration: BoxDecoration(
+              color: bgColor,
+              shape: BoxShape.circle,
+            ),
+            child: Icon(icon, color: color, size: 24),
           ),
-          child: Icon(icon, color: color),
+          title: Text(
+            title,
+            style: GoogleFonts.poppins(
+              fontWeight: FontWeight.w600,
+              fontSize: 16,
+              color: const Color(0xFF1E293B),
+            ),
+          ),
+          subtitle: Text(
+            subtitle,
+            style: GoogleFonts.inter(
+              fontSize: 12,
+              color: Colors.grey[500],
+            ),
+          ),
+          trailing: Switch(
+            value: value,
+            onChanged: onChanged,
+            activeTrackColor: const Color(0xFF1E293B),
+            activeColor: Colors.white,
+            inactiveTrackColor: Colors.grey[300],
+            inactiveThumbColor: Colors.white,
+            materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+          ),
         ),
-        title: Text(title, style: GoogleFonts.poppins(fontWeight: FontWeight.w600, fontSize: 15)),
-        subtitle: Text(subtitle, style: GoogleFonts.inter(fontSize: 12, color: Colors.grey)),
       ),
     );
   }
@@ -162,34 +172,49 @@ class _SettingsScreenState extends State<SettingsScreen> {
     required String title,
     required IconData icon,
     required Color color,
+    required Color bgColor,
     required VoidCallback onTap,
   }) {
     return Container(
-       margin: const EdgeInsets.only(bottom: 12),
+      margin: const EdgeInsets.only(bottom: 16),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(20),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.04),
-            blurRadius: 10,
-            offset: const Offset(0, 2),
+            color: Colors.black.withOpacity(0.03),
+            blurRadius: 15,
+            offset: const Offset(0, 4),
           ),
         ],
       ),
-      child: ListTile(
-        onTap: onTap,
-        contentPadding: const EdgeInsets.all(12),
-         leading: Container(
-          padding: const EdgeInsets.all(10),
-          decoration: BoxDecoration(
-            color: color.withOpacity(0.1),
-            shape: BoxShape.circle,
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: ListTile(
+          onTap: onTap,
+          leading: Container(
+            width: 48,
+            height: 48,
+            decoration: BoxDecoration(
+              color: bgColor,
+              shape: BoxShape.circle,
+            ),
+            child: Icon(icon, color: color, size: 24),
           ),
-          child: Icon(icon, color: color),
+          title: Text(
+            title,
+            style: GoogleFonts.poppins(
+              fontWeight: FontWeight.w600,
+              fontSize: 16,
+              color: const Color(0xFF1E293B),
+            ),
+          ),
+          trailing: const Icon(
+            Icons.arrow_forward_ios_rounded,
+            size: 14,
+            color: Colors.grey,
+          ),
         ),
-        title: Text(title, style: GoogleFonts.poppins(fontWeight: FontWeight.w600, fontSize: 15)),
-        trailing: const Icon(Icons.arrow_forward_ios_rounded, size: 16, color: Colors.grey),
       ),
     );
   }

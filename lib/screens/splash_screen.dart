@@ -20,7 +20,7 @@ class _SplashScreenState extends State<SplashScreen> {
 
   _navigateToWelcome() async {
     // Simulation du temps de chargement
-    await Future.delayed(const Duration(seconds: 4));
+    await Future.delayed(const Duration(seconds: 1));
     if (mounted) {
       Navigator.pushReplacement(
         context,
@@ -43,30 +43,20 @@ class _SplashScreenState extends State<SplashScreen> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            // Logo Icon animé
-            Container(
-              padding: const EdgeInsets.all(24),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                shape: BoxShape.circle,
-                boxShadow: [
-                  BoxShadow(
-                    color: AppTheme.secondaryColor.withOpacity(0.6),
-                    blurRadius: 40,
-                    spreadRadius: 2,
-                  )
-                ]
-              ),
-              child: const Icon(
-                Icons.school_rounded,
-                size: 60,
-                color: AppTheme.primaryColor,
+            // Logo EduGuinée (fond blanc retiré + ClipOval pour sécurité)
+            ClipOval(
+              child: Image.asset(
+                'assets/images/logo.png',
+                height: 180,
+                width: 180,
+                fit: BoxFit.cover,
               ),
             ).animate()
              .scale(duration: 800.ms, curve: Curves.easeOutBack)
-             .then().shimmer(duration: 1500.ms, color: AppTheme.secondaryColor)
-             .then().animate(onPlay: (controller) => controller.repeat(reverse: true))
-             .scaleXY(end: 1.1, duration: 1000.ms),
+             .then().shimmer(duration: 1500.ms, color: Colors.white),
+
+
+
             
             const SizedBox(height: 30),
 

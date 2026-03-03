@@ -13,6 +13,9 @@ import 'contact_screen.dart';
 import 'about_screen.dart';
 import 'settings_screen.dart';
 import 'welcome_screen.dart';
+import 'exercise_screen.dart';
+import 'calculator_screen.dart';
+import 'past_papers_screen.dart';
 
 class HomeScreen extends StatelessWidget {
   final String className;
@@ -160,7 +163,7 @@ class HomeScreen extends StatelessWidget {
                     delay: 100,
                     onTap: () => Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (_) => MyCoursesScreen(className: className)),
+                      MaterialPageRoute(builder: (_) => MyCoursesScreen(className: className, option: option)),
                     ),
                   ),
                   _buildFeatureCard(
@@ -169,7 +172,10 @@ class HomeScreen extends StatelessWidget {
                     icon: Icons.functions_rounded,
                     color: const Color(0xFFF5A623),
                     delay: 200,
-                    onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const FormulasScreen())),
+                    onTap: () => Navigator.push(
+                      context, 
+                      MaterialPageRoute(builder: (_) => FormulasScreen(className: className, option: option))
+                    ),
                   ),
                   _buildFeatureCard(
                     context,
@@ -177,7 +183,7 @@ class HomeScreen extends StatelessWidget {
                     icon: Icons.school_rounded,
                     color: const Color(0xFF9013FE),
                     delay: 300,
-                    onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const QuizScreen())),
+                    onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => QuizScreen(className: className, option: option))),
                   ),
                   _buildFeatureCard(
                     context,
@@ -185,6 +191,7 @@ class HomeScreen extends StatelessWidget {
                     icon: Icons.edit_note_rounded,
                     color: const Color(0xFF50E3C2),
                     delay: 400,
+                    onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => ExerciseScreen(className: className, option: option))),
                   ),
                   _buildFeatureCard(
                     context,
@@ -192,7 +199,7 @@ class HomeScreen extends StatelessWidget {
                     icon: Icons.auto_awesome_rounded,
                     color: AppTheme.accentColor,
                     delay: 500,
-                    onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const AIAssistantScreen())),
+                    onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => AIAssistantScreen(className: className, option: option))),
                   ),
                   _buildFeatureCard(
                     context,
@@ -208,6 +215,7 @@ class HomeScreen extends StatelessWidget {
                     icon: Icons.history_edu_rounded,
                     color: const Color(0xFFD0021B),
                     delay: 700,
+                    onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => PastPapersScreen(className: className, option: option))),
                   ),
                   _buildFeatureCard(
                     context,
@@ -215,6 +223,7 @@ class HomeScreen extends StatelessWidget {
                     icon: Icons.calculate_rounded,
                     color: const Color(0xFFBD10E0),
                     delay: 800,
+                    onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => CalculatorScreen(className: className))),
                   ),
                 ],
               ),

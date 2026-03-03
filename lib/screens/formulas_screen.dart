@@ -7,10 +7,13 @@ import '../data/course_data.dart';
 import 'subject_formulas_screen.dart';
 
 class FormulasScreen extends StatelessWidget {
-  const FormulasScreen({super.key});
+  final String className;
+  final String? option;
+  const FormulasScreen({super.key, required this.className, this.option});
 
   @override
   Widget build(BuildContext context) {
+    final subjects = CourseData.getSubjectsForClass(className, option: option);
     return Scaffold(
       backgroundColor: AppTheme.backgroundLight,
       appBar: AppBar(
@@ -23,10 +26,10 @@ class FormulasScreen extends StatelessWidget {
       ),
       body: ListView.separated(
         padding: const EdgeInsets.all(20),
-        itemCount: CourseData.subjects.length,
+        itemCount: subjects.length,
         separatorBuilder: (_, __) => const SizedBox(height: 16),
         itemBuilder: (context, index) {
-          final subject = CourseData.subjects[index];
+          final subject = subjects[index];
           // Simple heuristic for count (in real app would calculate from data)
           // For now we just mock "Recueil complet"
           

@@ -25,7 +25,7 @@ class AppTheme {
     end: Alignment.bottomRight,
   );
 
-  static ThemeData lightTheme(BuildContext context) {
+  static ThemeData lightTheme() {
     return ThemeData(
       useMaterial3: true,
       brightness: Brightness.light,
@@ -82,6 +82,30 @@ class AppTheme {
         shadowColor: Colors.black.withOpacity(0.05),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
         margin: const EdgeInsets.all(8),
+      ),
+
+      // Decorations des champs de saisie
+      inputDecorationTheme: InputDecorationTheme(
+        filled: true,
+        fillColor: Colors.white,
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(16),
+          borderSide: BorderSide.none,
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(16),
+          borderSide: BorderSide(color: Colors.grey.withOpacity(0.1), width: 1),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(16),
+          borderSide: const BorderSide(color: secondaryColor, width: 1.5),
+        ),
+        errorBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(16),
+          borderSide: const BorderSide(color: accentColor, width: 1),
+        ),
+        hintStyle: GoogleFonts.inter(color: textSub.withOpacity(0.5), fontSize: 14),
+        contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 18),
       ),
 
       appBarTheme: AppBarTheme(

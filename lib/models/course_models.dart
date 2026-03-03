@@ -75,14 +75,18 @@ class CourseSubChapter {
 class CourseSubject {
   final String id;
   final String name;
+  final String? description;
   final dynamic icon; // IconData
+  final String? imageAsset; // Path for illustration
   final dynamic color; // Color
   final List<CourseChapter> chapters;
 
   const CourseSubject({
     required this.id,
     required this.name,
+    this.description,
     required this.icon,
+    this.imageAsset,
     required this.color,
     required this.chapters,
   });

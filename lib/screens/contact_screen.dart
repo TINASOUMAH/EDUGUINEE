@@ -42,7 +42,7 @@ class ContactScreen extends StatelessWidget {
             
             const SizedBox(height: 24),
             
-            // Logo Placeholder (VelionX style)
+            // Logo EduGuinée
             Container(
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
@@ -50,8 +50,17 @@ class ContactScreen extends StatelessWidget {
                 shape: BoxShape.circle,
                 border: Border.all(color: Colors.white.withOpacity(0.1)),
               ),
-              child: const Icon(Icons.rocket_launch_rounded, size: 40, color: AppTheme.secondaryColor),
-            ).animate().scale(),
+              child: ClipOval(
+                child: Image.asset(
+                  'assets/images/logo.png',
+                  height: 80,
+                  width: 80,
+                  fit: BoxFit.cover,
+                ),
+              ),
+            ).animate().scale(duration: 600.ms, curve: Curves.easeOutBack),
+
+
             
             const SizedBox(height: 24),
             
@@ -155,11 +164,11 @@ class ContactScreen extends StatelessWidget {
     required int delay,
   }) {
     return Container(
-      margin: const EdgeInsets.only(bottom: 16),
-      padding: const EdgeInsets.all(20),
+      margin: const EdgeInsets.only(bottom: 12),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       decoration: BoxDecoration(
-        color: const Color(0xFFFFFBEB), // Cream color like reference (very light yellow/white)
-        borderRadius: BorderRadius.circular(24),
+        color: const Color(0xFFFFFBEB),
+        borderRadius: BorderRadius.circular(20),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withOpacity(0.1),
@@ -175,44 +184,49 @@ class ContactScreen extends StatelessWidget {
             children: [
               // Icon Box
               Container(
-                padding: const EdgeInsets.all(10),
+                padding: const EdgeInsets.all(8),
                 decoration: BoxDecoration(
                   color: Colors.white,
                   shape: BoxShape.circle,
-                  border: Border.all(color: color.withOpacity(0.2), width: 2),
+                  border: Border.all(color: color.withOpacity(0.2), width: 1.5),
                 ),
-                child: Icon(icon, color: color, size: 28),
+                child: Icon(icon, color: color, size: 24),
               ),
               const SizedBox(width: 16),
               // Title
               Text(
                 title,
                 style: GoogleFonts.poppins(
-                  fontSize: 20,
+                  fontSize: 18,
                   fontWeight: FontWeight.bold,
                   color: Colors.black87,
                 ),
               ),
             ],
           ),
-          if (content.isNotEmpty) ...[
-             const SizedBox(height: 8),
+          if (content.isNotEmpty)
              Padding(
-               padding: const EdgeInsets.only(left: 60), // Align with title
-               child: Text(
-                 content,
-                 style: GoogleFonts.inter(
-                   fontSize: 16,
-                   color: Colors.black54,
-                   fontWeight: FontWeight.w500,
-                 ),
+               padding: const EdgeInsets.only(left: 48), // Align with title
+               child: Column(
+                 crossAxisAlignment: CrossAxisAlignment.start,
+                 children: [
+                   const SizedBox(height: 8),
+                   Text(
+                     content,
+                     style: GoogleFonts.inter(
+                       fontSize: 14,
+                       color: Colors.black54,
+                       fontWeight: FontWeight.w500,
+                     ),
+                   ),
+                 ],
                ),
              ),
-          ],
-          if (actionWidget is! SizedBox) ...[ // Check if not empty
-             const SizedBox(height: 16),
-             actionWidget,
-          ]
+          if (actionWidget is! SizedBox)
+             Padding(
+               padding: const EdgeInsets.only(top: 16),
+               child: actionWidget,
+             )
         ],
       ),
     ).animate().fadeIn(delay: delay.ms).slideY(begin: 0.2);
