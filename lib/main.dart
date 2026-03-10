@@ -1,8 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 import 'core/theme/app_theme.dart';
 import 'screens/splash_screen.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  
+  // INITIALISATION SUPABASE (Remplacer avec vos propres clés)
+  await Supabase.initialize(
+    url: 'https://fqgxzabrdcivjplrcmvd.supabase.co',
+    anonKey: 'sb_publishable_LAq3vUho2M3bTooDOHPwzA_lFNfyWhA',
+  );
+
   runApp(const EduGuineeApp());
 }
 

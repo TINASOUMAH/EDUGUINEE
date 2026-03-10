@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 import '../core/theme/app_theme.dart';
+import '../services/supabase_service.dart';
 import 'register_screen.dart';
 import 'home_screen.dart';
 
@@ -14,8 +16,57 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   final _formKey = GlobalKey<FormState>();
+  final _service = SupabaseService();
+  
+  final _emailController = TextEditingController();
+  final _passwordController = TextEditingController();
+  
+  bool _isLoading = false;
   bool _obscurePassword = true;
   bool _rememberMe = false;
+
+  Future<void> _handleLogin() async {
+    if (!_formKey.currentState!.validate()) return;
+    
+    setState(() => _isLoading = true);
+    
+    try {
+      final response = await _service.signIn(
+        email: _emailController.text.trim(),
+        password: _passwordController.text.trim(),
+      );
+      
+      final profile = await _service.getProfile(response.user!.id);
+      
+      if (mounted) {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => HomeScreen(
+              className: profile?['class_name'] ?? '10ème année',
+              option: profile?['option'],
+            ),
+          ),
+        );
+      }
+    } on AuthException catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(e.message), backgroundColor: Colors.red),
+        );
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Identifiants incorrects'), backgroundColor: Colors.red),
+        );
+      }
+    } finally {
+      if (mounted) {
+        setState(() => _isLoading = false);
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -86,10 +137,11 @@ class _LoginScreenState extends State<LoginScreen> {
                     child: Column(
                       children: [
                         _buildTextField(
-                          label: 'Numéro de téléphone',
-                          hint: 'Ex: 620 00 00 00',
-                          icon: Icons.phone_android_rounded,
-                          keyboardType: TextInputType.phone,
+                          label: 'Email',
+                          hint: 'eleve@eduguinee.com',
+                          icon: Icons.email_outlined,
+                          controller: _emailController,
+                          keyboardType: TextInputType.emailAddress,
                         ).animate().fadeIn(delay: 400.ms).slideX(begin: 0.1, end: 0),
                         
                         const SizedBox(height: 20),
@@ -98,6 +150,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           label: 'Mot de passe',
                           hint: '••••••••',
                           icon: Icons.lock_outline_rounded,
+                          controller: _passwordController,
                           isPassword: true,
                           obscureText: _obscurePassword,
                           onTogglePassword: () {
@@ -143,24 +196,15 @@ class _LoginScreenState extends State<LoginScreen> {
                         const SizedBox(height: 32),
                   
                   ElevatedButton(
-                    onPressed: () {
-                      if (_formKey.currentState!.validate()) {
-                        Navigator.pushReplacement(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const HomeScreen(
-                              className: '10ème année',
-                            ),
-                          ),
-                        );
-                      }
-                    },
+                    onPressed: _isLoading ? null : _handleLogin,
                     style: ElevatedButton.styleFrom(
                       backgroundColor: AppTheme.secondaryColor,
                       foregroundColor: AppTheme.primaryColor,
                       padding: const EdgeInsets.symmetric(vertical: 18),
                     ),
-                    child: const Text('Se connecter'),
+                    child: _isLoading 
+                      ? const SizedBox(height: 24, width: 24, child: CircularProgressIndicator(strokeWidth: 2))
+                      : const Text('Se connecter'),
                   ).animate().fadeIn(delay: 700.ms).scale(duration: 400.ms),
 
                   const SizedBox(height: 16),
@@ -260,6 +304,7 @@ class _LoginScreenState extends State<LoginScreen> {
     required String label,
     required String hint,
     required IconData icon,
+    TextEditingController? controller,
     bool isPassword = false,
     bool obscureText = false,
     VoidCallback? onTogglePassword,
@@ -278,6 +323,7 @@ class _LoginScreenState extends State<LoginScreen> {
         ),
         const SizedBox(height: 8),
         TextFormField(
+          controller: controller,
           obscureText: obscureText,
           keyboardType: keyboardType,
           style: const TextStyle(color: Colors.white),

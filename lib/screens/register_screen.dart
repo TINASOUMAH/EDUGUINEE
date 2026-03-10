@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 import '../core/theme/app_theme.dart';
+import '../services/supabase_service.dart';
 import 'login_screen.dart';
 import 'home_screen.dart';
 
@@ -14,12 +16,70 @@ class RegisterScreen extends StatefulWidget {
 
 class _RegisterScreenState extends State<RegisterScreen> {
   final _formKey = GlobalKey<FormState>();
+  final _service = SupabaseService();
+  
+  // Controllers
+  final _firstNameController = TextEditingController();
+  final _lastNameController = TextEditingController();
+  final _emailController = TextEditingController();
+  final _phoneController = TextEditingController();
+  final _passwordController = TextEditingController();
+  
+  bool _isLoading = false;
   bool _obscurePassword = true;
   String? _selectedClass;
   String? _selectedOption;
 
   final List<String> _classes = ['6ème année', '10ème année', 'Terminale'];
   final List<String> _options = ['TSS', 'TSM', 'TEM'];
+
+  Future<void> _handleRegister() async {
+    if (!_formKey.currentState!.validate()) return;
+    
+    setState(() => _isLoading = true);
+    
+    try {
+      await _service.signUp(
+        email: _emailController.text.trim(),
+        password: _passwordController.text.trim(),
+        metadata: {
+          'first_name': _firstNameController.text.trim(),
+          'last_name': _lastNameController.text.trim(),
+          'phone': _phoneController.text.trim(),
+          'class_name': _selectedClass,
+          'option': _selectedOption,
+        },
+      );
+      
+      if (mounted) {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => HomeScreen(
+              className: _selectedClass ?? '10ème année',
+              option: _selectedOption,
+            ),
+          ),
+        );
+      }
+    } on AuthException catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(e.message), backgroundColor: Colors.red),
+        );
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Une erreur est survenue'), backgroundColor: Colors.red),
+        );
+      }
+    } finally {
+      if (mounted) {
+        setState(() => _isLoading = false);
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -83,6 +143,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                 label: 'Prénom',
                                 hint: 'Jean',
                                 icon: Icons.person_outline_rounded,
+                                controller: _firstNameController,
                               ),
                             ),
                             const SizedBox(width: 16),
@@ -91,6 +152,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                 label: 'Nom',
                                 hint: 'Camara',
                                 icon: Icons.person_outline_rounded,
+                                controller: _lastNameController,
                               ),
                             ),
                           ],
@@ -99,9 +161,20 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         const SizedBox(height: 20),
                         
                         _buildTextField(
+                          label: 'Email',
+                          hint: 'eleve@eduguinee.com',
+                          icon: Icons.email_outlined,
+                          controller: _emailController,
+                          keyboardType: TextInputType.emailAddress,
+                        ).animate().fadeIn(delay: 250.ms),
+                        
+                        const SizedBox(height: 20),
+                        
+                        _buildTextField(
                           label: 'Numéro de téléphone',
                           hint: '620 00 00 00',
                           icon: Icons.phone_android_rounded,
+                          controller: _phoneController,
                           keyboardType: TextInputType.phone,
                         ).animate().fadeIn(delay: 300.ms),
                         
@@ -139,6 +212,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           label: 'Mot de passe',
                           hint: '••••••••',
                           icon: Icons.lock_outline_rounded,
+                          controller: _passwordController,
                           isPassword: true,
                           obscureText: _obscurePassword,
                           onTogglePassword: () {
@@ -149,19 +223,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         const SizedBox(height: 40),
                         
                         ElevatedButton(
-                          onPressed: () {
-                            if (_formKey.currentState!.validate()) {
-                              Navigator.pushReplacement(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => HomeScreen(
-                                    className: _selectedClass ?? '10ème année',
-                                    option: _selectedOption,
-                                  ),
-                                ),
-                              );
-                            }
-                          },
+                          onPressed: _isLoading ? null : _handleRegister,
                           style: ElevatedButton.styleFrom(
                             backgroundColor: AppTheme.secondaryColor,
                             foregroundColor: AppTheme.primaryColor,
@@ -169,7 +231,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             elevation: 8,
                             shadowColor: AppTheme.secondaryColor.withOpacity(0.3),
                           ),
-                          child: const Text('Créer mon compte'),
+                          child: _isLoading 
+                            ? const CircularProgressIndicator()
+                            : const Text('Créer mon compte'),
                         ).animate().fadeIn(delay: 600.ms).scale(),
                       ],
                     ),
@@ -252,6 +316,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
     required String label,
     required String hint,
     required IconData icon,
+    TextEditingController? controller,
     bool isPassword = false,
     bool obscureText = false,
     VoidCallback? onTogglePassword,
@@ -270,6 +335,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
         ),
         const SizedBox(height: 8),
         TextFormField(
+          controller: controller,
           obscureText: obscureText,
           keyboardType: keyboardType,
           style: const TextStyle(color: Colors.white),
