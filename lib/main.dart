@@ -21,7 +21,7 @@ class EduGuineeApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'EduGuinée',
+      title: 'EDUGUINEE',
       debugShowCheckedModeBanner: false,
       theme: AppTheme.lightTheme(),
       home: const SplashScreen(),

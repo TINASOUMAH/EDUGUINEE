@@ -138,7 +138,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       children: [
                         _buildTextField(
                           label: 'Email',
-                          hint: 'eleve@eduguinee.com',
+                          hint: 'eleve@EDUGUINEE.COM',
                           icon: Icons.email_outlined,
                           controller: _emailController,
                           keyboardType: TextInputType.emailAddress,

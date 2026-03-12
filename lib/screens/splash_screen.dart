@@ -66,8 +66,8 @@ class _SplashScreenState extends State<SplashScreen> {
                 Text.rich(
                   const TextSpan(
                     children: [
-                      TextSpan(text: 'Edu', style: TextStyle(color: Colors.white)),
-                      TextSpan(text: 'Guinée', style: TextStyle(color: AppTheme.secondaryColor)),
+                      TextSpan(text: 'EDU', style: TextStyle(color: Colors.white)),
+                      TextSpan(text: 'GUINEE', style: TextStyle(color: AppTheme.secondaryColor)),
                     ]
                   ),
                   style: GoogleFonts.poppins(

@@ -39,6 +39,9 @@ dependencies:
   math_expressions: ^3.1.0
   syncfusion_flutter_pdfviewer: ^32.2.5
   supabase_flutter: any
+  google_generative_ai: ^0.4.6
+  http: ^1.2.2
+  shared_preferences: ^2.2.3
 
 dev_dependencies:
   flutter_test:

@@ -56,7 +56,7 @@ class WelcomeScreen extends StatelessWidget {
                     const TextSpan(
                       children: [
                         TextSpan(text: 'Bienvenue sur '),
-                        TextSpan(text: 'EduGuinée', style: TextStyle(color: AppTheme.secondaryColor)),
+                        TextSpan(text: 'EDUGUINEE', style: TextStyle(color: AppTheme.secondaryColor)),
                       ]
                     ),
                     textAlign: TextAlign.center,

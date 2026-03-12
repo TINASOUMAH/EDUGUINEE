@@ -31,7 +31,7 @@ class HomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('EduGuinée', style: GoogleFonts.poppins(color: AppTheme.primaryColor, fontWeight: FontWeight.bold)),
+        title: Text('EDUGUINEE', style: GoogleFonts.poppins(color: AppTheme.primaryColor, fontWeight: FontWeight.bold)),
         backgroundColor: Colors.transparent,
         elevation: 0,
         leading: Builder(

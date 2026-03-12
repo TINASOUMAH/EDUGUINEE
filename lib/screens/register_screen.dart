@@ -122,7 +122,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   ).animate().fadeIn().slideX(begin: -0.1, end: 0),
                   
                   Text(
-                    'Rejoignez la communauté EduGuinée dès aujourd\'hui',
+                    'Rejoignez la communauté EDUGUINEE dès aujourd\'hui',
                     style: GoogleFonts.inter(
                       fontSize: 14,
                       color: Colors.white70,
@@ -162,7 +162,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         
                         _buildTextField(
                           label: 'Email',
-                          hint: 'eleve@eduguinee.com',
+                          hint: 'eleve@EDUGUINEE.COM',
                           icon: Icons.email_outlined,
                           controller: _emailController,
                           keyboardType: TextInputType.emailAddress,
