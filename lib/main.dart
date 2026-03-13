@@ -3,8 +3,13 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import 'core/theme/app_theme.dart';
 import 'screens/splash_screen.dart';
 
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  
+  // INITIALISATION DOTENV
+  await dotenv.load(fileName: ".env");
   
   // INITIALISATION SUPABASE (Remplacer avec vos propres clés)
   await Supabase.initialize(

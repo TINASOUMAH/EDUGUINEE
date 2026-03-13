@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:google_generative_ai/google_generative_ai.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 /// ============================================================
 /// GeminiService — Tuteur IA pour l'application EduGuinée
@@ -13,14 +14,13 @@ import 'package:google_generative_ai/google_generative_ai.dart';
 ///   5. [summarizeCourse]  – Résumé structuré d'un cours
 ///   6. [correctExercise]  – Correction + feedback d'un exercice
 ///
-/// 🔑 IMPORTANT : Remplace [AIzaSyAZcD0tzjfDsfqMzXTo2SwHQZyjBEPiadk] par ta vraie clé API.
-///    Obtiens-la gratuitement sur : https://aistudio.google.com/app/apikey
+/// 🔑 IMPORTANT : Assurez-vous d'avoir une clé API valide dans le fichier .env
 /// ============================================================
 class GeminiService {
   // ─────────────────────────────────────────
   // 🔑 Configuration API
   // ─────────────────────────────────────────
-  static const String _apiKey = 'AIzaSyBP81yeulN8MnGcyhJzkQY_fJ_FHwYrbrs';
+  static String get _apiKey => dotenv.env['GEMINI_APIKEY'] ?? '';
   static const String _modelName = 'gemini-2.5-flash';
 
   // Persona du tuteur IA adapté au contexte guinéen
